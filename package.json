@@ -1,0 +1,25 @@
+{
+  "name": "bdd-test-auth",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node_modules/.bin/cucumber-js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chris31389/bdd-test-auth.git"
+  },
+  "author": "Chris Butler",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chris31389/bdd-test-auth/issues"
+  },
+  "homepage": "https://github.com/chris31389/bdd-test-auth#readme",
+  "dependencies": {
+    "chai": "^4.1.2",
+    "chromedriver": "^2.40.0",
+    "cucumber": "^4.2.1",
+    "selenium-webdriver": "^4.0.0-alpha.1"
+  }
+}
