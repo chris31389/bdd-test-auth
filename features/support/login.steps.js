@@ -5,15 +5,17 @@ const {
     Then
 } = require('cucumber')
 const assert = require('assert');
-require('chromedriver');
+const chromeDriver = require('chromedriver');
 const seleniumWebdriver = require('selenium-webdriver');
-var By = seleniumWebdriver.By;
-var until = seleniumWebdriver.until;
+const chrome = require('selenium-webdriver/chrome');
+const By = seleniumWebdriver.By;
+const until = seleniumWebdriver.until;
 
 When('I log in', function (next) {
     const world = this;
     const driver = new seleniumWebdriver.Builder()
         .forBrowser('chrome')
+        .setChromeOptions(new chrome.Options().headless())
         .build();
 
     var url = "https://draycir-account-api-stable.azurewebsites.net/authorize" +
