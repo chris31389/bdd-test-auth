@@ -11,6 +11,7 @@ var By = seleniumWebdriver.By;
 var until = seleniumWebdriver.until;
 
 When('I log in', function (next) {
+    const world = this;
     const driver = new seleniumWebdriver.Builder()
         .forBrowser('chrome')
         .build();
@@ -22,39 +23,41 @@ When('I log in', function (next) {
         "&audience=" + encodeURIComponent("https://localhost:51259");
 
     driver.get(url)
-        //        .then(_ => driver.wait(until.elementLocated(By.css("input[type='email']"))))
-        //        .then(userNameInput => userNameInput.sendKeys("Hello"))
+        .then(_ => driver.wait(until.elementLocated(By.css("input[type='email']"))))
+        .then(userNameInput => userNameInput.sendKeys(""))
+        .then(_ => driver.wait(until.elementLocated(By.css("input[type='password']"))))
+        .then(passwordInput => driver.wait(until.elementIsVisible(passwordInput)))
+        .then(passwordInput => passwordInput.sendKeys(""))
         .then(_ => driver.wait(until.elementLocated(By.css("input[type='submit']"))))
-        .then(_ => driver.sleep(1000))
-        .then(_ => driver.findElement(By.css("input[type='email']")))
-        .then(userNameInput => userNameInput.sendKeys("Hello"))
-        .then(_ => driver.findElement(By.css("input[type='password']")))
-        .then(passwordInput => passwordInput.sendKeys("Bye"))
-        .then(() => driver.getCurrentUrl()
-            .then(value => {
-                console.log(value);
-                next();
-            })
-            .catch(x => console.log(x))
-            /* 
-                                .then(() => driver.wait(until.elementLocated(By.css("input[type='password']")))
-                                    .then(passwordInput => passwordInput.sendKeys("Bye")
-                                        .then(() => {
-                                            driver.getCurrentUrl()
-                                                .then(value => {
-                                                    console.log(value);
-                                                    next();
-                                                })
-                                        })
-                                    )
-                                ) */
-        )
-        .catch(x => console.log(x));
+        .then(submitInput => driver.wait(until.elementIsVisible(submitInput)))
+        .then(submitInput => submitInput.click())
+        .then(_ => driver.wait(until.urlContains("id_token")))
+        .then(_ => driver.getCurrentUrl())
+        .then(url => {
+            const indexOfHash = url.indexOf("#");
+            if (indexOfHash >= 0) {
+                const queryStringParameters = url.substring(indexOfHash + 1);
+                queryStringParameters.split("&").forEach(queryStringParam => {
+                    if (queryStringParam.indexOf("=") >= 0) {
+                        const split = queryStringParam.split("=");
+                        if (split[0] === "access_token") {
+                            world.accessToken = split[1];
+                        }
+                    }
+                });
+            }
+        })
+        .then(_ => next())
+        .catch(x => { console.log(x); next(); });
 });
 
 Then('I have an access token', function () {
-    isSuccess = false;
-    assert.equal(isSuccess, true);
+    const world = this;
+    const accessToken = world.accessToken;
+    console.log(accessToken);
+    assert.notStrictEqual(accessToken, undefined);
+    assert.notStrictEqual(accessToken, null);
+    assert.equal(accessToken.length > 1, true);
 });
 
 // Returns a promise that resolves to the element
