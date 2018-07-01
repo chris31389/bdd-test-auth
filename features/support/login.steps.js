@@ -22,30 +22,34 @@ When('I log in', function (next) {
         "&audience=" + encodeURIComponent("https://localhost:51259");
 
     driver.get(url)
-        .then(() => driver
-            .wait(until.elementLocated(By.css("input[type='email']")))
-            .then(userNameInput => userNameInput.sendKeys("Hello")
-                .then(() =>
-                    driver.getCurrentUrl()
-                    .then(value => {
-                        console.log(value);
-                        next();
-                    })
-                )
-                /* 
-                                    .then(() => driver.wait(until.elementLocated(By.css("input[type='password']")))
-                                        .then(passwordInput => passwordInput.sendKeys("Bye")
-                                            .then(() => {
-                                                driver.getCurrentUrl()
-                                                    .then(value => {
-                                                        console.log(value);
-                                                        next();
-                                                    })
-                                            })
-                                        )
-                                    ) */
-            )
-        );
+        //        .then(_ => driver.wait(until.elementLocated(By.css("input[type='email']"))))
+        //        .then(userNameInput => userNameInput.sendKeys("Hello"))
+        .then(_ => driver.wait(until.elementLocated(By.css("input[type='submit']"))))
+        .then(_ => driver.sleep(1000))
+        .then(_ => driver.findElement(By.css("input[type='email']")))
+        .then(userNameInput => userNameInput.sendKeys("Hello"))
+        .then(_ => driver.findElement(By.css("input[type='password']")))
+        .then(passwordInput => passwordInput.sendKeys("Bye"))
+        .then(() => driver.getCurrentUrl()
+            .then(value => {
+                console.log(value);
+                next();
+            })
+            .catch(x => console.log(x))
+            /* 
+                                .then(() => driver.wait(until.elementLocated(By.css("input[type='password']")))
+                                    .then(passwordInput => passwordInput.sendKeys("Bye")
+                                        .then(() => {
+                                            driver.getCurrentUrl()
+                                                .then(value => {
+                                                    console.log(value);
+                                                    next();
+                                                })
+                                        })
+                                    )
+                                ) */
+        )
+        .catch(x => console.log(x));
 });
 
 Then('I have an access token', function () {
